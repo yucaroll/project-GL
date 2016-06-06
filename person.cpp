@@ -7,6 +7,8 @@
 #define PI 3.141592
 void createCylinder(GLfloat, GLfloat);
 void createHemiSphere(GLfloat);
+int LoadGLTextures();
+AUX_RGBImageRec *LoadBMPFile(char *Filename);
 float x, y, z;
 float radius;
 float theta;
@@ -14,6 +16,10 @@ float phi;
 float zoom = 60.0;
 
 int beforeX, beforeY;
+
+GLuint texture[1];                          // 텍스처 하나용 저장공간 ( 새코드 )
+
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);                // WndProc 선언
 
 GLfloat vertices[][3] = {
     { -1.0, -1.0, 1.0 },
@@ -61,36 +67,78 @@ void InitLight_positional()
 }
 void polygon(int a, int b, int c, int d)
 {
-    glColor3fv(colors[a]);
+    //glColor3fv(colors[a]);
     glBegin(GL_POLYGON);
-    glVertex3fv(vertices[a]);
-    glVertex3fv(vertices[b]);
-    glVertex3fv(vertices[c]);
-    glVertex3fv(vertices[d]);
+    glTexCoord2f(0.0f, 1.0f); glVertex3fv(vertices[a]);
+    glTexCoord2f(0.0f, 1.0f); glVertex3fv(vertices[b]);
+    glTexCoord2f(0.0f, 1.0f); glVertex3fv(vertices[c]);
+    glTexCoord2f(0.0f, 1.0f); glVertex3fv(vertices[d]);
     glEnd();
 }
 
 // 6개의 면을 만든다.
 void createCube(void)
-{
+{/*
     polygon(0, 3, 2, 1);    // front
     polygon(2, 3, 7, 6);    // right
     polygon(3, 0, 4, 7);    // bottom
     polygon(4, 5, 6, 7);    // back
     polygon(1, 2, 6, 5);    // top
     polygon(5, 4, 0, 1);    // right
+	*/
+	glBegin(GL_QUADS);
+       // 앞면
+       glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);    // 텍스처와 쿼드의 왼쪽아래
+       glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);    // 텍스처와 쿼드의 오른쪽아래
+       glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);    // 텍스처와 쿼드의 오른쪽위
+       glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);    // 텍스처와 쿼드의 왼쪽위
+       // 뒷면
+       glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);    // 텍스처와 쿼드의 오른쪽아래
+       glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);    // 텍스처와 쿼드의 오른쪽위
+       glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);    // 텍스처와 쿼드의 왼쪽위
+       glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);    // 텍스처와 쿼드의 왼쪽아래
+       // 윗면
+       glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);    // 텍스처와 쿼드의 왼쪽위
+       glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);    // 텍스처와 쿼드의 왼쪽아래
+       glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);    // 텍스처와 쿼드의 오른쪽아래
+       glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);    // 텍스처와 쿼드의 오른쪽위
+       // 아랫면
+       glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);    // 텍스처와 쿼드의 오른쪽위
+       glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);    // 텍스처와 쿼드의 왼쪽위
+       glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);    // 텍스처와 쿼드의 왼쪽아래
+       glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);    // 텍스처와 쿼드의 오른쪽아래
+       // 오른면
+       glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);    // 텍스처와 쿼드의 오른쪽아래
+       glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);    // 텍스처와 쿼드의 오른쪽위
+       glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);    // 텍스처와 쿼드의 왼쪽위
+       glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);    // 텍스처와 쿼드의 왼쪽아래
+       // 왼면
+       glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);    // 텍스처와 쿼드의 왼쪽아래
+       glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);    // 텍스처와 쿼드의 오른쪽아래
+       glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);    // 텍스처와 쿼드의 오른쪽위
+       glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);    // 텍스처와 쿼드의 왼쪽위
+   glEnd();
 }
 
-void init (void)
+int init (void)
 {
-    glClearColor (0.0, 0.0, 0.0, 0.0);
-    glColor3f(1.0, 1.0, 0.0);
-    glEnable(GL_DEPTH_TEST); // depth activation
+	 if (!LoadGLTextures())                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+   {
+       return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
+   }
+
+   glEnable(GL_TEXTURE_2D);                        // 텍스처 매핑을 활성화시킴 ( 새코드 )
+   glShadeModel(GL_SMOOTH);                        // 부드러운 쉐이딩을 활성화시킴
+   glClearColor(0.0f, 0.0f, 0.0f, 0.5f);                    // 검은색 배경
+   glClearDepth(1.0f);                            // 깊이버퍼 설정
+   glEnable(GL_DEPTH_TEST);                        // 깊이테스트를 켬
+   glDepthFunc(GL_LEQUAL);                            // 깊이테스트 종류
+   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);            // 정말로 멋진 원근 계산
+   return TRUE;                                // 초기화 성공
 }
 
 void reshape (int w, int h)
 {
-    printf("reshape\n");
     glViewport(0, 0, w, h);
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
@@ -118,9 +166,10 @@ void display (void)
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
     // (앞의 세 인자는 카메라의 위치, 중간의 세 인자는 카메라의 초점,
     //  뒤의 세 인자는 법선벡터 방향 (0, 1, 0))으로 해줘야 세워져 보인다.
-
+	/*
     glBegin(GL_LINES);  // X, Y, Z 선 표시
     glColor3f(1.0, 0.0, 0.0); // X축, red
     glVertex3f(0.0, 0.0, 0.0);
@@ -134,8 +183,8 @@ void display (void)
     glVertex3f(0.0, 0.0, 0.0);
     glVertex3f(0.0, 0.0, 10.0);
     glEnd();
-
-    //createCube();// 큐브 생성
+	*/
+    createCube();// 큐브 생성
     /*
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -148,6 +197,7 @@ void display (void)
     glEnd();
 	*/
     //glutSolidCube(3);
+	/*
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, -1.5);
@@ -190,7 +240,7 @@ void display (void)
     glTranslatef(0.0, 0.0, 1.8);
     glRotatef(90, 1.0, 0.0, 0.0);
     createHemiSphere(2);    // head
-
+	*/
     glFlush ();
     glutSwapBuffers();
 }
@@ -342,6 +392,57 @@ void createCylinder(GLfloat radius, GLfloat h)
         glVertex3f(x, y, centerz + h);
     }
     glEnd();
+}
+
+AUX_RGBImageRec *LoadBMPFile(char *Filename)
+{
+	FILE *File=NULL;                            // 파일 핸들
+	if (!Filename)                                // 파일이름이 전달되었는지 확인
+   {
+       return NULL;                            // 그렇지 않다면 NULL을 반환
+   }
+
+	File=fopen(Filename,"r");                        // 파일이 존재하는지 확인
+	if (File)                                // 파일이 존재하는가?
+   {
+       fclose(File);                            // 핸들을 닫음
+       return auxDIBImageLoad(Filename);                // 비트맵을 읽어들이고 포인터를 반환
+   }
+
+	return NULL;
+}
+
+int LoadGLTextures()
+{
+	int Status=FALSE;                            // 상태 표시기
+	AUX_RGBImageRec *TextureImage[1];                    // 텍스처용 저장공간을 만듬
+	memset(TextureImage,0,sizeof(void *)*1);                // 포인터를 NULL로 설정
+	char* filename = "Data/NeHe.bmp";
+	printf("%s\n",filename);
+	if (TextureImage[0]=LoadBMPFile(filename))
+	{
+       Status=TRUE;                            // Status를 TRUE로 설정
+	   glGenTextures(1, &texture[0]);                    // 텍스처를 만듬
+
+       // 비트맵으로부터 가져온 데이터를 사용한 일반적인 텍스처 생성
+       glBindTexture(GL_TEXTURE_2D, texture[0]);
+	   // 텍스처를 만든다
+       glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
+	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);    // 선형 필터링
+       glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);    // 선형 필터링
+	}
+
+	 if (TextureImage[0])                            // 텍스처가 존재하는지 확인
+   {
+       if (TextureImage[0]->data)                    // 텍스처 이미지가 존재하는지 확인
+       {
+           free(TextureImage[0]->data);                // 텍스처 이미지 메모리를 해제
+       }
+
+       free(TextureImage[0]);                        // 이미지 구조체를 해제
+   }
+
+	return Status;                                // Status를 반환
 }
 
 void main (int argc, char** argv)
