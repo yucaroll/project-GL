@@ -81,6 +81,7 @@
     <ClCompile Include="person.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\texture.bmp" />
     <None Include="NeHe.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

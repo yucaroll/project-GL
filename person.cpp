@@ -69,23 +69,24 @@ void polygon(int a, int b, int c, int d)
 {
     //glColor3fv(colors[a]);
     glBegin(GL_POLYGON);
-    glTexCoord2f(0.0f, 1.0f); glVertex3fv(vertices[a]);
-    glTexCoord2f(0.0f, 1.0f); glVertex3fv(vertices[b]);
-    glTexCoord2f(0.0f, 1.0f); glVertex3fv(vertices[c]);
+    glTexCoord2f(0.0f, 0.0f); glVertex3fv(vertices[a]);
+    glTexCoord2f(1.0f, 0.0f); glVertex3fv(vertices[b]);
+    glTexCoord2f(1.0f, 1.0f); glVertex3fv(vertices[c]);
     glTexCoord2f(0.0f, 1.0f); glVertex3fv(vertices[d]);
     glEnd();
 }
 
 // 6개의 면을 만든다.
 void createCube(void)
-{/*
+{
     polygon(0, 3, 2, 1);    // front
     polygon(2, 3, 7, 6);    // right
     polygon(3, 0, 4, 7);    // bottom
     polygon(4, 5, 6, 7);    // back
     polygon(1, 2, 6, 5);    // top
     polygon(5, 4, 0, 1);    // right
-	*/
+	
+	/*
 	glBegin(GL_QUADS);
        // 앞면
        glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);    // 텍스처와 쿼드의 왼쪽아래
@@ -118,6 +119,7 @@ void createCube(void)
        glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);    // 텍스처와 쿼드의 오른쪽위
        glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);    // 텍스처와 쿼드의 왼쪽위
    glEnd();
+   */
 }
 
 int init (void)
@@ -417,7 +419,7 @@ int LoadGLTextures()
 	int Status=FALSE;                            // 상태 표시기
 	AUX_RGBImageRec *TextureImage[1];                    // 텍스처용 저장공간을 만듬
 	memset(TextureImage,0,sizeof(void *)*1);                // 포인터를 NULL로 설정
-	char* filename = "Data/NeHe.bmp";
+	char* filename = "Data/texture.bmp";
 	printf("%s\n",filename);
 	if (TextureImage[0]=LoadBMPFile(filename))
 	{
@@ -453,7 +455,7 @@ void main (int argc, char** argv)
     glutInitWindowSize (1000, 1000);
     glutCreateWindow ("Cube");
     init();
-//    InitLight();
+    //InitLight();
     glutDisplayFunc (display);
     glutReshapeFunc (reshape);
     glutMouseFunc(processMouse);
