@@ -5,7 +5,7 @@
 #include <GL/GLAUX.H>
 #include <GL/GL.h>
 #define PI 3.141592
-void createCircle(GLfloat, GLfloat, GLfloat, GLfloat);
+void createCircle(GLfloat, GLfloat, GLfloat);
 void createCylinder(GLfloat, GLfloat);
 void createCylinder2(GLfloat,GLfloat,GLfloat);
 void createHemiSphere2(GLfloat);
@@ -228,6 +228,11 @@ void display (void)
     glTranslatef(0.0, 0.0, -1.5);
 	createCylinder2(2.0,2.0,3.0);   // body
 
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.0, 0.0, 1.8);
+	createCircle(2,1.0f,0.0f);// head bottom
+
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, 1.8);
@@ -443,11 +448,11 @@ void createCylinder2(GLfloat top, GLfloat bottom, GLfloat height)
   gluQuadricNormals(cylinder, GLU_SMOOTH);
   gluCylinder(cylinder, top, bottom, height, 20, 100);
   
-  createCircle(top, height, 1.0f, 0.0f); // ¿ø±âµÕ À­¸é
-  createCircle(bottom, height, -1.0f, height); // ¿ø±âµÕ ¹Ø¸é
+  createCircle(top, 1.0f, 0.0f); // ¿ø±âµÕ À­¸é
+  createCircle(bottom, -1.0f, height); // ¿ø±âµÕ ¹Ø¸é
 }
 
-void createCircle(GLfloat r, GLfloat h, GLfloat pos, GLfloat move){
+void createCircle(GLfloat r, GLfloat pos, GLfloat move){
   GLfloat centerx = 0, centery = 0, centerz = 0;
   GLfloat x, y, angle;
 
