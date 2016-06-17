@@ -191,6 +191,38 @@ void display (void)
 	*/
     //createCube();// 큐브 생성
 	
+    glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(1.0, 0.0, 3.0);
+    glRotatef(30, 0.0, 1.0, 0.0);
+    createCylinder2(0.1, 0.1, 1.0); // left antenna
+
+    glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-1.0, 0.0, 3.0);
+    glRotatef(30, 0.0, -1.0, 0.0);
+    createCylinder2(0.1, 0.1, 1.0); // right antenna
+
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(2.5, 0.0, -1.0);
+    createCylinder2(0.4, 0.4, 2.5); // left arm
+
+    glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-2.5, 0.0, -1.0);
+    createCylinder2(0.4, 0.4, 2.5); // right arm
+
+    glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-0.8, 0.0, -2.8);
+    createCylinder2(0.4, 0.4, 2.5); // ieft leg
+
+    glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.8, 0.0, -2.8);
+    createCylinder2(0.4, 0.4, 2.5); // right leg
+
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, -1.5);
@@ -201,7 +233,7 @@ void display (void)
     glTranslatef(0.0, 0.0, 1.8);
     glRotatef(90, 1.0, 0.0, 0.0);
     createHemiSphere2(2);    // head
-	
+
     /*
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
