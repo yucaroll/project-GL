@@ -10,7 +10,7 @@ void createCylinder(GLfloat, GLfloat);
 void createCylinder2(GLfloat,GLfloat,GLfloat);
 void createHemiSphere2(GLfloat);
 void createHemiSphere(GLfloat);
-int LoadGLTextures();
+int LoadGLTextures(char*,int);
 AUX_RGBImageRec *LoadBMPFile(char *Filename);
 float x, y, z;
 float radius;
@@ -20,7 +20,7 @@ float zoom = 60.0;
 
 int beforeX, beforeY;
 
-GLuint texture[1];                          // 텍스처 하나용 저장공간 ( 새코드 )
+GLuint texture[5];                          // 텍스처 하나용 저장공간 ( 새코드 )
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);                // WndProc 선언
 
@@ -127,9 +127,16 @@ void createCube(void)
 
 int init (void)
 {
-	 if (!LoadGLTextures())                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+	if (!LoadGLTextures("Data/texture.bmp",0))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
    {
+	   printf("fail1");
        return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
+   }
+
+	if (!LoadGLTextures("Data/NeHe.bmp",1))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+   {
+       printf("fail2");
+	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
    }
 
    glEnable(GL_TEXTURE_2D);                        // 텍스처 매핑을 활성화시킴 ( 새코드 )
@@ -191,6 +198,8 @@ void display (void)
 	*/
     //createCube();// 큐브 생성
 	
+	
+    glBindTexture(GL_TEXTURE_2D, texture[1]);
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(1.0, 0.0, 3.0);
@@ -223,6 +232,8 @@ void display (void)
     glTranslatef(0.8, 0.0, -2.8);
     createCylinder2(0.4, 0.4, 2.5); // right leg
 
+	
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, -1.5);
@@ -441,7 +452,6 @@ void createCylinder2(GLfloat top, GLfloat bottom, GLfloat height)
 {
   GLUquadricObj *cylinder = gluNewQuadric();
   
-  glBindTexture(GL_TEXTURE_2D, texture[0]);
   gluQuadricTexture(cylinder, GL_TRUE); 
   gluQuadricDrawStyle(cylinder, GLU_FILL); 
   glPolygonMode(GL_FRONT, GL_FILL); 
@@ -540,20 +550,20 @@ AUX_RGBImageRec *LoadBMPFile(char *Filename)
 	return NULL;
 }
 
-int LoadGLTextures()
+int LoadGLTextures(char* filename, int num)
 {
 	int Status=FALSE;                            // 상태 표시기
 	AUX_RGBImageRec *TextureImage[1];                    // 텍스처용 저장공간을 만듬
 	memset(TextureImage,0,sizeof(void *)*1);                // 포인터를 NULL로 설정
-	char* filename = "Data/texture.bmp";
+
 	printf("%s\n",filename);
 	if (TextureImage[0]=LoadBMPFile(filename))
 	{
        Status=TRUE;                            // Status를 TRUE로 설정
-	   glGenTextures(1, &texture[0]);                    // 텍스처를 만듬
+	   glGenTextures(1, &texture[num]);                    // 텍스처를 만듬
 
        // 비트맵으로부터 가져온 데이터를 사용한 일반적인 텍스처 생성
-       glBindTexture(GL_TEXTURE_2D, texture[0]);
+       glBindTexture(GL_TEXTURE_2D, texture[num]);
 	   // 텍스처를 만든다
        glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
 	   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);    // 선형 필터링
