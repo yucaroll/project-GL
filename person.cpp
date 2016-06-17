@@ -6,6 +6,8 @@
 #include <GL/GL.h>
 #define PI 3.141592
 void createCylinder(GLfloat, GLfloat);
+void createCylinder2(GLfloat,GLfloat,GLfloat);
+void createHemiSphere2(GLfloat);
 void createHemiSphere(GLfloat);
 int LoadGLTextures();
 AUX_RGBImageRec *LoadBMPFile(char *Filename);
@@ -168,7 +170,7 @@ void display (void)
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	
     // (앞의 세 인자는 카메라의 위치, 중간의 세 인자는 카메라의 초점,
     //  뒤의 세 인자는 법선벡터 방향 (0, 1, 0))으로 해줘야 세워져 보인다.
 	/*
@@ -186,7 +188,19 @@ void display (void)
     glVertex3f(0.0, 0.0, 10.0);
     glEnd();
 	*/
-    createCube();// 큐브 생성
+    //createCube();// 큐브 생성
+	
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.0, 0.0, -1.5);
+	createCylinder2(2.0,2.0,3.0);   // body
+
+    glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.0, 0.0, 1.8);
+    glRotatef(90, 1.0, 0.0, 0.0);
+    createHemiSphere2(2);    // head
+	
     /*
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -308,6 +322,46 @@ void processMouseMotion(int x, int y)
         theta += (2.0 * PI);
 }
 
+void createHemiSphere2(GLfloat radius)
+{
+    GLfloat x = y = z = 0;
+    /* function createHalfSphere()
+    구의 중심 x, y, z 좌표를 받아 반구를 만드는 함수
+    x : 반구의 중심 x 좌표
+    y : 반구의 중심 y 좌표
+    z : 반구의 중심 z 좌표
+    raidus : 반구의 반지름
+    */
+    GLfloat angley;  //y축 값을 구하기 위한 각도
+    GLfloat nexty;  //다음 y축 값을 구하기 위한 각도
+    GLfloat anglex;  //x, y축 값을 구하기 위한 각도
+
+   // glColor3ub(153, 224, 0);  //반구의 색 지정
+    glBegin(GL_QUAD_STRIP);
+    for(angley = 0.0f; angley <= (0.5f*PI); angley += ((0.5f*PI)/8.0f))  //반구만 그려야 하므로 0.5곱함
+    {
+        y = radius*sin(angley);     //y축 값 계산
+        nexty = angley+((0.5f*PI)/8.0f);  //다음 angley값 저장
+        for(anglex = 0.0f; anglex < (2.0f*PI); anglex += (PI/8.0f))
+        {
+            x = radius*cos(angley)*sin(anglex);
+            z = radius*cos(angley)*cos(anglex);
+			glTexCoord2d(x, nexty); 
+            glNormal3f(-cos(angley)*sin(anglex), -sin(angley), -cos(angley)*cos(anglex)); //반구의 안쪽으로 normal 벡터 생성
+            glVertex3f(x, y, z);
+
+            x = radius*cos(nexty)*sin(anglex);
+            z = radius*cos(nexty)*cos(anglex);
+			glTexCoord2d(x, nexty); 
+            glNormal3f(-cos(nexty)*sin(anglex), -sin(nexty), -cos(nexty)*cos(anglex));
+			glVertex3f(x, radius*sin(nexty), z);
+        }
+    }
+    glEnd();
+
+}
+
+
 void createHemiSphere(GLfloat radius)
 {
     GLfloat x = y = z = 0;
@@ -343,6 +397,46 @@ void createHemiSphere(GLfloat radius)
     }
     glEnd();
 
+}
+
+void createCylinder2(GLfloat top, GLfloat bottom, GLfloat height)
+{
+  GLUquadricObj *cylinder = gluNewQuadric();
+  
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
+  gluQuadricTexture(cylinder, GL_TRUE); 
+  gluQuadricDrawStyle(cylinder, GLU_FILL); 
+  glPolygonMode(GL_FRONT, GL_FILL); 
+  gluQuadricNormals(cylinder, GLU_SMOOTH);
+  gluCylinder(cylinder, top, bottom, height, 20, 100);
+
+  GLfloat centerx = 0, centery = 0, centerz = 0;
+  GLfloat x, y, angle;
+
+  glBegin(GL_TRIANGLE_FAN);           //원기둥의 밑면
+  glNormal3f(0.0f, 0.0f, -1.0f);
+  glVertex3f(centerx, centery, centerz);
+
+  for(angle = 0.0f; angle < (2.0f*PI); angle += (PI/8.0f))
+  {
+	  x = centerx + bottom*sin(angle);
+      y = centery + bottom*cos(angle);
+      glNormal3f(0.0f, 0.0f, -1.0f);
+      glVertex3f(x, y, centerz);
+  }
+  glEnd();
+
+  glBegin(GL_TRIANGLE_FAN);           //원기둥의 윗면
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glVertex3f(centerx, centery, centerz + height);
+  for(angle = (2.0f*PI); angle > 0.0f; angle -= (PI/8.0f))
+  {
+      x = centerx + top*sin(angle);
+      y = centery + top*cos(angle);
+      glNormal3f(0.0f, 0.0f, 1.0f);
+      glVertex3f(x, y, centerz + height);
+  }
+  glEnd();
 }
 
 void createCylinder(GLfloat radius, GLfloat h)
