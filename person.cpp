@@ -5,6 +5,7 @@
 #include <GL/GLAUX.H>
 #include <GL/GL.h>
 #define PI 3.141592
+void createCircle(GLfloat, GLfloat, GLfloat, GLfloat);
 void createCylinder(GLfloat, GLfloat);
 void createCylinder2(GLfloat,GLfloat,GLfloat);
 void createHemiSphere2(GLfloat);
@@ -409,32 +410,26 @@ void createCylinder2(GLfloat top, GLfloat bottom, GLfloat height)
   glPolygonMode(GL_FRONT, GL_FILL); 
   gluQuadricNormals(cylinder, GLU_SMOOTH);
   gluCylinder(cylinder, top, bottom, height, 20, 100);
+  
+  createCircle(top, height, 1.0f, 0.0f); // ¿ø±âµÕ À­¸é
+  createCircle(bottom, height, -1.0f, height); // ¿ø±âµÕ ¹Ø¸é
+}
 
+void createCircle(GLfloat r, GLfloat h, GLfloat pos, GLfloat move){
   GLfloat centerx = 0, centery = 0, centerz = 0;
   GLfloat x, y, angle;
 
-  glBegin(GL_TRIANGLE_FAN);           //¿ø±âµÕÀÇ ¹Ø¸é
-  glNormal3f(0.0f, 0.0f, -1.0f);
-  glVertex3f(centerx, centery, centerz);
-
-  for(angle = 0.0f; angle < (2.0f*PI); angle += (PI/8.0f))
-  {
-	  x = centerx + bottom*sin(angle);
-      y = centery + bottom*cos(angle);
-      glNormal3f(0.0f, 0.0f, -1.0f);
-      glVertex3f(x, y, centerz);
-  }
-  glEnd();
-
-  glBegin(GL_TRIANGLE_FAN);           //¿ø±âµÕÀÇ À­¸é
-  glNormal3f(0.0f, 0.0f, 1.0f);
-  glVertex3f(centerx, centery, centerz + height);
+  glBegin(GL_TRIANGLE_FAN);
+  glTexCoord2f(0.0f, 0.0f);
+  glNormal3f(0.0f, 0.0f, pos);
+  glVertex3f(centerx, centery, centerz + move);
   for(angle = (2.0f*PI); angle > 0.0f; angle -= (PI/8.0f))
   {
-      x = centerx + top*sin(angle);
-      y = centery + top*cos(angle);
-      glNormal3f(0.0f, 0.0f, 1.0f);
-      glVertex3f(x, y, centerz + height);
+      x = centerx + r*sin(angle);
+      y = centery + r*cos(angle);
+	  glTexCoord2f(x, y);
+      glNormal3f(0.0f, 0.0f, pos);
+      glVertex3f(x, y, centerz + move);
   }
   glEnd();
 }
