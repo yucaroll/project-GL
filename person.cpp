@@ -7,6 +7,8 @@
 #define TEX_SKIN 3
 #define TEX_BLACK 1
 #define TEX_SHOE 5
+#define TEX_EYE 6
+#define TEX_FACE 7
 #define PI 3.141592
 void createCircle(GLfloat, GLfloat, GLfloat);
 void createCylinder(GLfloat, GLfloat);
@@ -60,10 +62,49 @@ GLfloat JinmaeColorsAdjusted[6][3];
 
 void InitLight()
 {
-    GLfloat MyLightPosition[] = {5.0, 5.0, 5.0, 0.0};
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, MyLightPosition);
+	GLfloat ambientLight[4];
+    GLfloat diffuseLight[4];
+    GLfloat lightPosition[4];
+    GLfloat specular[4];
+    GLfloat yrot;
+
+	ambientLight[0] = 0.3f; 
+    ambientLight[1] = 0.3f;
+    ambientLight[2] = 0.3f;
+    ambientLight[3] = 1.0f;
+
+    diffuseLight[0] = 0.7f;
+    diffuseLight[1] = 0.7f;
+    diffuseLight[2] = 0.7f;
+    diffuseLight[3] = 1.0f;
+
+    lightPosition[0] = 0.0f;
+    lightPosition[1] = 0.0f;
+    lightPosition[2] = 5.0f;
+    lightPosition[3] = 1.0f;
+
+    specular[0] = 1.0f;
+    specular[1] = 1.0f;
+    specular[2] = 1.0f;
+    specular[3] = 1.0f;
+
+    yrot = 0.0f;
+
+    //GLfloat MyLightPosition[] = {5.0, 5.0, 5.0, 0.0};
+   // glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHT0);
+    //glLightfv(GL_LIGHT0, GL_POSITION, MyLightPosition);
+    glClearColor(0.5f, 0.5f, 0.5f, 1.0f); //밝은 회색을 배경색으로 설정 
+    glFrontFace(GL_CCW); //반시계방향으로 감은 폴리곤이 앞면
+
+    glEnable(GL_LIGHTING); //조명 켜기
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight); //설정
+    //glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight); //설정
+    //glLightfv(GL_LIGHT0, GL_SPECULAR, specular); //설정
+    //glLightfv(GL_LIGHT0, GL_POSITION, lightPosition); //설정
+    glEnable(GL_LIGHT0); // 0번 조명 사용
+
+
 }
 
 void InitLight_positional()
@@ -162,9 +203,21 @@ int init (void)
 	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
    }
 
-	if (!LoadGLTextures("Data/shoe.bmp",5))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+   if (!LoadGLTextures("Data/shoe.bmp",TEX_SHOE))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
    {
        printf("fail5");
+	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
+   }
+
+   if (!LoadGLTextures("Data/eye.bmp",TEX_EYE))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+   {
+       printf("fail6");
+	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
+   }
+
+    if (!LoadGLTextures("Data/face.bmp",TEX_FACE))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+   {
+       printf("fail7");
 	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
    }
 
@@ -237,20 +290,20 @@ void display (void)
     glBindTexture(GL_TEXTURE_2D, texture[4]);
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-2.5, 0.0, -0.5);
-	glRotatef(-30, 0.0, -1.0, 0.0);
-    createCylinder3(0.4, 0.4, 2.0,TEX_SKIN,TEX_BLACK); // right arm
+    glTranslatef(-2.0, -2.0, 1.0);
+	glRotatef(90.0, -1.0, 0.0, 0.0);
+    createCylinder3(0.4, 0.4, 2.0,TEX_SKIN,TEX_BLACK); // left arm
 	
     glBindTexture(GL_TEXTURE_2D, texture[3]);
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-0.8, 0.0, -2.8);
-    createCylinder2(0.4, 1.0, 2.5); // ieft leg
+    glTranslatef(-0.8, 0.0, -3.2);
+    createCylinder2(0.4, 1.0, 3.5); // ieft leg
 
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(0.8, 0.0, -2.8);
-    createCylinder2(0.4, 1.0, 2.5); // right leg
+    glTranslatef(0.8, 0.0, -3.2);
+    createCylinder2(0.4, 1.0, 3.5); // right leg
 
     glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glLoadIdentity();
@@ -258,18 +311,133 @@ void display (void)
     glTranslatef(0.0, 0.0, -1.5);
 	createCylinder3(2.3,1.5,3.0,TEX_BLACK,TEX_BLACK);   // body
 
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-2.0, -2.0, 1.0);
+    createSphere(0.4f); // left hand
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-1.9, -2.2, 1.2);
+    createCylinder2(0.1, 0.1, 0.4); // left finger
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-1.9, -2.2, 1.6);
+    createSphere(0.1f); // left finger point
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-1.4, -2.2, 1.0);
+	glRotatef(90.0, 0.0, -1.0, 0.0);
+    createCylinder2(0.1, 0.1, 0.4); // left finger2
+	
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-1.4, -2.2, 1.0);
+    createSphere(0.1f); // left finger2 point
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(2.5, 0.0, -0.5);
+    createSphere(0.4f); // right hand
+	
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-2.0, 0.0, 1.0);
+    createSphere(0.4f); // left sholder
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(1.5, 0.0, 1.2);
+    createSphere(0.4f); // right sholder
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_SHOE]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.8, 0.0, -3.2);
+    createSphere(0.4f); // right shoe
+
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-0.8, 0.0, -3.2);
+    createSphere(0.4f); // left shoe
+	
+	/*
     glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, 1.8);
 	createCircle(2,1.0f,0.0f);// head bottom
+*/
 
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);			// 왼머리
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(0.8, 0.0, -2.9);
+    glTranslatef(-0.6, -0.1, 3.6);
+	glRotatef(50, 0.0, -1.0, 0.0);
+	glScalef(1.0, 1.0, 0.7);
+    createSphere(1.8f);
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);			// 오른머리
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(1.1, -0.1, 3.4);
+	glRotatef(50, 0.0, -1.0, 0.0);
+	glScalef(0.6, 1.0, 1.0);
+    createSphere(1.9f);
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_FACE]);			// 후두엽
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.0, 0.0, 3.0);
+    createSphere(2.0f);
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);			// 뒷머리
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.0, 0.3, 3.2);
+    createSphere(2.0f);
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);
+    glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(2.0, 0.6, 2.2);
+	glRotatef(-60, 0.0, -1.0, 0.0);
+	glScalef(4.0, 1.0, 1.3);
     createSphere(0.4f);
-	
+
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);
+    glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(-2.0, 0.6, 2.2);
+	glRotatef(60, 0.0, -1.0, 0.0);
+	glScalef(4.0, 1.0, 1.3);
+    createSphere(0.4f);
+	/*
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_EYE]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(1.0, -1.1, 3.1);
+	glRotatef(30, 0.0, 0.0, 1.0);
+    createSphere(0.7f); // right eye
+	*/
+/*
+	glBindTexture(GL_TEXTURE_2D, texture[0]);			// 전두엽
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.0, -1.0, 2.5);
+    createSphere(2.0f);
+	*/
+
 	/*
     glBindTexture(GL_TEXTURE_2D, texture[0]);
     glLoadIdentity();
@@ -384,17 +552,17 @@ void processMouseMotion(int x, int y)
     if(abs(beforeX-x) > abs(beforeY-y)){
         if(beforeX < x)
         {
-            theta -= 0.5;
+            theta -= 0.2;
 //            zoom--;
         }else if(beforeX > x){
-            theta += 0.5;
+            theta += 0.2;
 //            zoom++;
         }
     }else {
         if(beforeY > y){
-            phi -= 0.5;
+            phi -= 0.2;
         }else if(beforeY < y){
-            phi -= 0.5;
+            phi -= 0.2;
         }
     }
 
@@ -653,9 +821,9 @@ void main (int argc, char** argv)
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH );
     glutInitWindowPosition (100, 100);
     glutInitWindowSize (1000, 1000);
-    glutCreateWindow ("Cube");
+    glutCreateWindow ("IU YOU&I ver");
     init();
-    //InitLight();
+    InitLight();
     glutDisplayFunc (display);
     glutReshapeFunc (reshape);
     glutMouseFunc(processMouse);
