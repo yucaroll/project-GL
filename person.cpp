@@ -299,15 +299,15 @@ void processMouseMotion(int x, int y)
     if(abs(beforeX-x) > abs(beforeY-y)){
         if(beforeX < x)
         {
-            theta -= 0.2;
+            theta -= 0.1;
         }else if(beforeX > x){
-            theta += 0.2;
+            theta += 0.1;
         }
     }else {
         if(beforeY > y){
-            phi -= 0.2;
+            phi -= 0.1;
         }else if(beforeY < y){
-            phi -= 0.2;
+            phi -= 0.1;
         }
     }
 
