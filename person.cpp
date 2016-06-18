@@ -290,7 +290,7 @@ void display (void)
     glBindTexture(GL_TEXTURE_2D, texture[4]);
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-2.0, -2.0, 1.0);
+    glTranslatef(-1.5, -2.0, 1.0);
 	glRotatef(90.0, -1.0, 0.0, 0.0);
     createCylinder3(0.4, 0.4, 2.0,TEX_SKIN,TEX_BLACK); // left arm
 	
@@ -298,48 +298,48 @@ void display (void)
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(-0.8, 0.0, -3.2);
-    createCylinder2(0.4, 1.0, 3.5); // ieft leg
+    createCylinder2(0.4, 1.0, 3.0); // ieft leg
 
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.8, 0.0, -3.2);
-    createCylinder2(0.4, 1.0, 3.5); // right leg
+    createCylinder2(0.4, 1.0, 3.0); // right leg
 
     glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, -1.5);
-	createCylinder3(2.3,1.5,3.0,TEX_BLACK,TEX_BLACK);   // body
+	createCylinder3(2.3,1.3,3.0,TEX_BLACK,TEX_BLACK);   // body
 
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-2.0, -2.0, 1.0);
+    glTranslatef(-1.5, -2.0, 1.0);
     createSphere(0.4f); // left hand
 
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-1.9, -2.2, 1.2);
+    glTranslatef(-1.4, -2.2, 1.2);
     createCylinder2(0.1, 0.1, 0.4); // left finger
 
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-1.9, -2.2, 1.6);
+    glTranslatef(-1.4, -2.2, 1.6);
     createSphere(0.1f); // left finger point
 
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-1.4, -2.2, 1.0);
+    glTranslatef(-0.9, -2.2, 1.0);
 	glRotatef(90.0, 0.0, -1.0, 0.0);
     createCylinder2(0.1, 0.1, 0.4); // left finger2
 	
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-1.4, -2.2, 1.0);
+    glTranslatef(-0.9, -2.2, 1.0);
     createSphere(0.1f); // left finger2 point
 
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
@@ -351,7 +351,7 @@ void display (void)
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-2.0, 0.0, 1.0);
+    glTranslatef(-1.5, 0.0, 1.0);
     createSphere(0.4f); // left sholder
 
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);
@@ -382,18 +382,18 @@ void display (void)
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);			// ¿Þ¸Ó¸®
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-0.6, -0.1, 3.6);
+    glTranslatef(-0.5, -0.1, 3.6);
 	glRotatef(50, 0.0, -1.0, 0.0);
-	glScalef(1.0, 1.0, 0.7);
+	glScalef(1.0, 1.0, 0.8);
     createSphere(1.8f);
 
-	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);			// ¿À¸¥¸Ó¸®
+	glBindTexture(GL_TEXTURE_2D, texture[TEX_BLACK]);			// ¿Þ¸Ó¸®
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(1.1, -0.1, 3.4);
-	glRotatef(50, 0.0, -1.0, 0.0);
-	glScalef(0.6, 1.0, 1.0);
-    createSphere(1.9f);
+    glTranslatef(0.5, -0.1, 3.6);
+	glRotatef(-50, 0.0, -1.0, 0.0);
+	glScalef(1.0, 1.0, 0.8);
+    createSphere(1.8f);
 
 	glBindTexture(GL_TEXTURE_2D, texture[TEX_FACE]);			// ÈÄµÎ¿±
 	glLoadIdentity();
