@@ -6,6 +6,7 @@
 #include <GL/GL.h>
 #define TEX_SKIN 3
 #define TEX_BLACK 1
+#define TEX_SHOE 5
 #define PI 3.141592
 void createCircle(GLfloat, GLfloat, GLfloat);
 void createCylinder(GLfloat, GLfloat);
@@ -14,6 +15,7 @@ void createCylinder3(GLfloat,GLfloat,GLfloat, int, int);
 void createHemiSphere2(GLfloat);
 void createHemiSphere(GLfloat);
 int LoadGLTextures(char*,int);
+void createSphere(GLfloat);
 AUX_RGBImageRec *LoadBMPFile(char *Filename);
 float x, y, z;
 float radius;
@@ -160,6 +162,12 @@ int init (void)
 	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
    }
 
+	if (!LoadGLTextures("Data/shoe.bmp",5))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+   {
+       printf("fail5");
+	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
+   }
+
    glEnable(GL_TEXTURE_2D);                        // 텍스처 매핑을 활성화시킴 ( 새코드 )
    glShadeModel(GL_SMOOTH);                        // 부드러운 쉐이딩을 활성화시킴
    glClearColor(0.0f, 0.0f, 0.0f, 0.5f);                    // 검은색 배경
@@ -255,12 +263,30 @@ void display (void)
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, 1.8);
 	createCircle(2,1.0f,0.0f);// head bottom
+
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.8, 0.0, -2.9);
+    createSphere(0.4f);
 	
+	/*
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, 1.8);
     glRotatef(90, 1.0, 0.0, 0.0);
-    createHemiSphere2(2);    // head
+    createHemiSphere(2);    // head
+	*/
+
+	/* 공타는 아이유
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glLoadIdentity();
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    glTranslatef(0.0, 0.0, -5.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    createSphere(3);
+	*/
 
     /*
     glMatrixMode(GL_MODELVIEW);
@@ -419,7 +445,6 @@ void createHemiSphere2(GLfloat radius)
         }
     }
     glEnd();
-
 }
 
 
@@ -458,6 +483,17 @@ void createHemiSphere(GLfloat radius)
     }
     glEnd();
 
+}
+
+void createSphere(GLfloat r)
+{
+GLUquadricObj *sphere = gluNewQuadric();
+  
+  gluQuadricTexture(sphere, GL_TRUE); 
+  gluQuadricDrawStyle(sphere, GLU_FILL); 
+  glPolygonMode(GL_FRONT, GL_FILL); 
+  gluQuadricNormals(sphere, GLU_SMOOTH);
+  gluSphere(sphere,r,36 ,18);
 }
 
 void createCylinder3(GLfloat top, GLfloat bottom, GLfloat height, int texture1, int texture2)
