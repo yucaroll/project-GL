@@ -24,6 +24,12 @@
     <None Include="..\..\..\..\..\Desktop\빵폴더\texture2.bmp">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="Data\body.bmp">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="Data\skin.bmp">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="person.cpp">

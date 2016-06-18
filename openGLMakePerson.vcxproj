@@ -82,6 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\Desktop\빵폴더\texture2.bmp" />
+    <None Include="Data\body.bmp" />
+    <None Include="Data\skin.bmp" />
     <None Include="Data\texture.bmp" />
     <None Include="NeHe.bmp" />
   </ItemGroup>

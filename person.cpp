@@ -4,10 +4,13 @@
 #include <GL/glut.h>
 #include <GL/GLAUX.H>
 #include <GL/GL.h>
+#define TEX_SKIN 3
+#define TEX_BLACK 1
 #define PI 3.141592
 void createCircle(GLfloat, GLfloat, GLfloat);
 void createCylinder(GLfloat, GLfloat);
 void createCylinder2(GLfloat,GLfloat,GLfloat);
+void createCylinder3(GLfloat,GLfloat,GLfloat, int, int);
 void createHemiSphere2(GLfloat);
 void createHemiSphere(GLfloat);
 int LoadGLTextures(char*,int);
@@ -20,7 +23,7 @@ float zoom = 60.0;
 
 int beforeX, beforeY;
 
-GLuint texture[5];                          // 텍스처 하나용 저장공간 ( 새코드 )
+GLuint texture[10];                          // 텍스처 하나용 저장공간 ( 새코드 )
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);                // WndProc 선언
 
@@ -133,9 +136,27 @@ int init (void)
        return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
    }
 
-	if (!LoadGLTextures("Data/NeHe.bmp",1))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+	if (!LoadGLTextures("Data/black.bmp",TEX_BLACK))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
    {
        printf("fail2");
+	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
+   }
+
+	if (!LoadGLTextures("Data/body.bmp",2))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+   {
+       printf("fail3");
+	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
+   }
+
+	if (!LoadGLTextures("Data/skin.bmp",TEX_SKIN))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+   {
+       printf("fail4");
+	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
+   }
+
+	if (!LoadGLTextures("Data/arm2.bmp",4))                            // 텍스처 로딩 루틴으로 점프함( 새코드 )
+   {
+       printf("fail5");
 	   return FALSE;                            // 텍스처가 로딩되지 않았다면 FALSE를 반환 ( 새코드 )
    }
 
@@ -198,52 +219,43 @@ void display (void)
 	*/
     //createCube();// 큐브 생성
 	
-	
-    glBindTexture(GL_TEXTURE_2D, texture[1]);
-    glLoadIdentity();
-    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(1.0, 0.0, 3.0);
-    glRotatef(30, 0.0, 1.0, 0.0);
-    createCylinder2(0.1, 0.1, 1.0); // left antenna
-
-    glLoadIdentity();
-    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-1.0, 0.0, 3.0);
-    glRotatef(30, 0.0, -1.0, 0.0);
-    createCylinder2(0.1, 0.1, 1.0); // right antenna
-
+    glBindTexture(GL_TEXTURE_2D, texture[4]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(2.5, 0.0, -1.0);
-    createCylinder2(0.4, 0.4, 2.5); // left arm
-
+    glTranslatef(2.5, 0.0, -0.5);
+	glRotatef(30, 0.0, -1.0, 0.0);
+    createCylinder3(0.4, 0.4, 2.0,TEX_SKIN,TEX_BLACK); // right arm
+	
+    glBindTexture(GL_TEXTURE_2D, texture[4]);
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    glTranslatef(-2.5, 0.0, -1.0);
-    createCylinder2(0.4, 0.4, 2.5); // right arm
-
+    glTranslatef(-2.5, 0.0, -0.5);
+	glRotatef(-30, 0.0, -1.0, 0.0);
+    createCylinder3(0.4, 0.4, 2.0,TEX_SKIN,TEX_BLACK); // right arm
+	
+    glBindTexture(GL_TEXTURE_2D, texture[3]);
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(-0.8, 0.0, -2.8);
-    createCylinder2(0.4, 0.4, 2.5); // ieft leg
+    createCylinder2(0.4, 1.0, 2.5); // ieft leg
 
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.8, 0.0, -2.8);
-    createCylinder2(0.4, 0.4, 2.5); // right leg
+    createCylinder2(0.4, 1.0, 2.5); // right leg
 
-	
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, -1.5);
-	createCylinder2(2.0,2.0,3.0);   // body
+	createCylinder3(2.3,1.5,3.0,TEX_BLACK,TEX_BLACK);   // body
 
+    glBindTexture(GL_TEXTURE_2D, texture[TEX_SKIN]);
 	glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, 1.8);
 	createCircle(2,1.0f,0.0f);// head bottom
-
+	
     glLoadIdentity();
     gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
     glTranslatef(0.0, 0.0, 1.8);
@@ -346,17 +358,17 @@ void processMouseMotion(int x, int y)
     if(abs(beforeX-x) > abs(beforeY-y)){
         if(beforeX < x)
         {
-            theta -= 0.1;
+            theta -= 0.5;
 //            zoom--;
         }else if(beforeX > x){
-            theta += 0.1;
+            theta += 0.5;
 //            zoom++;
         }
     }else {
         if(beforeY > y){
-            phi -= 0.1;
+            phi -= 0.5;
         }else if(beforeY < y){
-            phi -= 0.1;
+            phi -= 0.5;
         }
     }
 
@@ -446,6 +458,22 @@ void createHemiSphere(GLfloat radius)
     }
     glEnd();
 
+}
+
+void createCylinder3(GLfloat top, GLfloat bottom, GLfloat height, int texture1, int texture2)
+{
+  GLUquadricObj *cylinder = gluNewQuadric();
+  
+  gluQuadricTexture(cylinder, GL_TRUE); 
+  gluQuadricDrawStyle(cylinder, GLU_FILL); 
+  glPolygonMode(GL_FRONT, GL_FILL); 
+  gluQuadricNormals(cylinder, GLU_SMOOTH);
+  gluCylinder(cylinder, top, bottom, height, 20, 100);
+  
+  glBindTexture(GL_TEXTURE_2D, texture[texture1]);
+  createCircle(top, 1.0f, 0.0f); // 원기둥 윗면
+  glBindTexture(GL_TEXTURE_2D, texture[texture2]);
+  createCircle(bottom, -1.0f, height); // 원기둥 밑면
 }
 
 void createCylinder2(GLfloat top, GLfloat bottom, GLfloat height)
